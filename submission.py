@@ -2,6 +2,13 @@ import numpy as np
 import pandas as pd
 
 
+def calculate_historical_var(df_portfolio_returns, alpha):
+    quantile = 1-alpha
+    df_result = df_portfolio_returns.quantile(quantile)
+    df_result.index = [0]
+    return df_result[0]
+
+
 def calculate_ewma_variance(df_etf_returns, decay_factor, window):
     weights = decay_factor**np.arange(window)
     weights /= weights.sum()
