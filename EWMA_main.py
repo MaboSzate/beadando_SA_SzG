@@ -11,12 +11,12 @@ def calc_ewma_weights(decay, window):
 def implement_ewma(filename, decay1, decay2, window):
     df=pd.read_csv(filename)
     df=df.set_index("Date")
-    df["Log Rets"]=np.log(df['Adj Close']/df['Adj Close'].shift(1))
-    df["Log Rets Sqrd"]=df["Log Rets"]**2
+    df["Log Returns"]=np.log(df['Adj Close']/df['Adj Close'].shift(1))
+    df["Log Returns Sqrd"]=df["Log Returns"]**2
     for i in range(1, window+1):
-        df[f"Log Rets Sqrd_lag_{i}"] = df["Log Rets Sqrd"].shift(i)
+        df[f"Log Returns Sqrd_lag_{i}"] = df["Log Returns Sqrd"].shift(i)
     wts1=calc_ewma_weights(decay1,window)
-    relevant_cols = [f'Log Rets Sqrd_lag_{i}' for i in range(1, window + 1)]
+    relevant_cols = [f'Log Returns Sqrd_lag_{i}' for i in range(1, window + 1)]
     df_subset = df[relevant_cols]
     df[f'volatility_forecast_{decay1}'] = np.sqrt(np.dot(df_subset, wts1))
     df[f'volatility_forecast_{decay1}'].plot(label="decay="+str(decay1))
@@ -27,5 +27,5 @@ def implement_ewma(filename, decay1, decay2, window):
     plt.show()
 
 
-implement_ewma("MOO.csv", 0.94,0.97,100)
+#implement_ewma("MOO.csv", 0.94,0.97,100)
 
