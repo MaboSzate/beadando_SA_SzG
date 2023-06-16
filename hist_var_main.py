@@ -80,13 +80,15 @@ import pandas as pd
 #     df.plot(x=etf1, y="var")
 #     return df.loc[best_row].to_dict()
 
+# ETF beolvasása
 def read_etf_file(etf):
-    filename = etf + '.csv'
+    filename = f'{etf}.csv'
     df = pd.read_csv(filename, index_col=0)
     df.index = pd.to_datetime(df.index)
     return df
 
 
+# Hozamok kiszámítása
 def calc_etf_returns(etf, return_type="log"):
     df = read_etf_file(etf)
     df = df[['Adj Close']]
@@ -99,6 +101,7 @@ def calc_etf_returns(etf, return_type="log"):
     return df
 
 
+# Az ETF-ek hozamainak összeillesztése egy dataframe-be
 def calc_joined_returns(d_weights):
     l_df = []
     for etf, value in d_weights.items():
@@ -113,6 +116,7 @@ def calc_joined_returns(d_weights):
     return df_joined
 
 
+# ETF-ekből képzett portfólió hozamainak kiszámítása
 def calc_portfolio_returns(d_weights):
     df_joined = calc_joined_returns(d_weights)
     df_weighted_returns = df_joined * pd.Series(d_weights)
@@ -124,6 +128,7 @@ def calc_portfolio_returns(d_weights):
     return df_portfolio
 
 
+# Historikus VaR kiszámítása
 def calc_historical_var(df_returns, conf_level):
     # from_date = subtract_trading_date(last_day_of_interval, window_in_days)
     # df_ret = get_portfolio_returns(d_weights)
@@ -132,6 +137,7 @@ def calc_historical_var(df_returns, conf_level):
     return float(df_result_ret.iloc[0])
 
 
+# Azon súly megtalálása, amely mellett a historikus VaR értéke a legjobb
 def find_best_var(etf1, etf2, conf_level):
     d_weights = {etf1: np.arange(0, 1, 0.01), etf2: np.arange(1, 0, -0.01)}
     df = pd.DataFrame(d_weights)
@@ -151,6 +157,7 @@ def find_best_var(etf1, etf2, conf_level):
     return df.loc[best_row].to_dict()
 
 
-# Ellenőrzés
-df_returns = pd.DataFrame({'returns': np.arange(-0.05, 0.06, 0.01)})
-print(calc_historical_var(df_returns, 0.95))
+if __name__ == '__main__':
+    # Ellenőrzés
+    df_returns = pd.DataFrame({'returns': np.arange(-0.05, 0.06, 0.01)})
+    print(calc_historical_var(df_returns, 0.95))
