@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def calc_etf_logreturns(filename):
-    df = pd.read_csv(filename)
+def calc_etf_logreturns(etf):
+    df = pd.read_csv(f'{etf}.csv')
     df = df.set_index("Date")
     df["log_returns"] = np.log(df['Adj Close'] / df['Adj Close'].shift(1))
     df.dropna(inplace=True)
@@ -29,14 +29,17 @@ def calculate_ewma_variance(df_etf_returns, decay_factor,  window):
     return df_volatility_forecast
 
 
-# Ellenőrzés
-df1 = calc_etf_logreturns('VOO.csv')
-volatility_forecast_94 = calculate_ewma_variance(df1, 0.94, 100)
+# Eredmény ábrázolása
+def plot_ewma(etf):
+    df = calc_etf_logreturns(etf)
+    ewma_94 = calculate_ewma_variance(df, 0.94, 100)
+    ewma_97 = calculate_ewma_variance(df, 0.97, 100)
+    ewma = ewma_94.merge(ewma_97, left_on='Date', right_on='Date')
+    ewma.plot()
+    plt.legend(['decay_factor = 0.94', 'decay_factor = 0.97'])
+    plt.xticks(rotation=-20)
+    plt.show()
 
-df2 = calc_etf_logreturns('VOO.csv')
-volatility_forecast_97 = calculate_ewma_variance(df1, 0.97, 100)
 
-both = volatility_forecast_94.merge(volatility_forecast_97,
-                                    left_on='Date', right_on='Date')
-both.plot()
-plt.show()
+if __name__ == '__main__':
+    plot_ewma('MOO')
