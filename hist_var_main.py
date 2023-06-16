@@ -89,13 +89,10 @@ def read_etf_file(etf):
 
 
 # Hozamok kiszámítása
-def calc_etf_returns(etf, return_type="log"):
+def calc_etf_returns(etf):
     df = read_etf_file(etf)
     df = df[['Adj Close']]
-    if return_type == "simple":
-        df["returns"] = df["Adj Close"]/df["Adj Close"].shift(1)
-    if return_type == "log":
-        df['returns'] = np.log(df['Adj Close']/df['Adj Close'].shift(1))
+    df["returns"] = df["Adj Close"]/df["Adj Close"].shift(1) - 1
     df = df[['returns']]
     df.columns = [etf]
     return df
@@ -105,7 +102,7 @@ def calc_etf_returns(etf, return_type="log"):
 def calc_joined_returns(d_weights):
     l_df = []
     for etf, value in d_weights.items():
-        df_temp = calc_etf_returns(etf, return_type='simple')
+        df_temp = calc_etf_returns(etf)
         l_df.append(df_temp)
     df_joined = pd.concat(l_df, axis=1)
     df_joined.sort_index(inplace=True)
@@ -143,12 +140,13 @@ def find_best_var(etf1, etf2, conf_level):
     df = pd.DataFrame(d_weights)
     df.index = range(len(df))
     l_vars = []
-    best_var = np.inf
+    best_var = -np.inf
     best_row = -1
     for i in range(len(df)):
         d_weights = df.loc[i].to_dict()
-        var = calc_historical_var(d_weights, conf_level)
-        if var < best_var:
+        df_returns = calc_portfolio_returns(d_weights)
+        var = calc_historical_var(df_returns, conf_level)
+        if var > best_var:
             best_var = var
             best_row = i
         l_vars.append(var)
@@ -161,3 +159,14 @@ if __name__ == '__main__':
     # Ellenőrzés
     df_returns = pd.DataFrame({'returns': np.arange(-0.05, 0.06, 0.01)})
     print(calc_historical_var(df_returns, 0.95))
+
+    df1 = calc_portfolio_returns({'VOO': 0.5, 'MOO': 0.5})
+    print(calc_historical_var(df1, 0.95))
+
+    df2 = calc_portfolio_returns({'VOO': 0.3, 'MOO': 0.7})
+    print(calc_historical_var(df2, 0.95))
+
+    df2 = calc_portfolio_returns({'VOO': 0.7, 'MOO': 0.3})
+    print(calc_historical_var(df2, 0.95))
+
+    print(find_best_var('VOO', 'MOO', 0.95))
