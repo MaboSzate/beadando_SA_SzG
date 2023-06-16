@@ -9,8 +9,8 @@ from sklearn.preprocessing import PolynomialFeatures
 
 
 def create_data(filename, window, split=False):
-    df=pd.read_csv(filename)
-    df=df.set_index("Date")
+    df = pd.read_csv(filename)
+    df = df.set_index("Date")
     df.index = pd.to_datetime(df.index)
     # df = df[df.index.year >= 2021] # to shorten runtime
     df["Log Returns"]=np.log(df['Adj Close']/df['Adj Close'].shift(1))
@@ -59,7 +59,8 @@ def hyperparameter_search(X_train, X_test, y_train, y_test,
     d_mse = {}
     for degree in degrees:
         name, model, mse_on_test, coefficients_on_train_set, y_pred = \
-            create_train_and_evaluate_polynomial_model(X_train, X_test, y_train, y_test, degree)
+            create_train_and_evaluate_polynomial_model(X_train, X_test,
+                                                       y_train, y_test, degree)
         d_mse[degree] = mse_on_test
         print(f'for degree: {degree}, MSE: {mse_on_test}')
         if mse_on_test < best_mse:
