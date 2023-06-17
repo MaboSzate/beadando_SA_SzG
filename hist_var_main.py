@@ -73,7 +73,7 @@ def find_best_var(etf1, etf2, conf_level):
             best_row = i
         l_vars.append(var)
     df["var"] = l_vars
-    df.plot(x=etf1, y="var")
+    df.plot(x=etf1, y="var", title='VaR value to weight of VOO')
     values = df.loc[best_row].to_dict()
     best_weight_1, best_weight_2, best_var_value = \
         values[etf1], values[etf2], values['var']

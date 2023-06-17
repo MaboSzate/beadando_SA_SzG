@@ -79,7 +79,8 @@ def plot_var_to_correlation(expected_return, volatility, numOfSim, conf_level):
         expected_return, volatility, correlation, numOfSim, conf_level)
              for correlation in l_correlations]
     df_var = pd.DataFrame(l_var, index=l_correlations, columns=['var'])
-    df_var.plot(xlabel='Correlation between VOO and MOO')
+    df_var.plot(xlabel='Correlation',
+                title='VaR value to the correlation of VOO and MOO')
     plt.show()
 
 

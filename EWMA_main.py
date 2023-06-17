@@ -12,11 +12,21 @@ def calc_etf_logreturns(etf):
     return df[['log_returns']]
 
 
+def calc_ewma_weights(decay_factor, window):
+    weights = decay_factor ** np.arange(window)
+    weights /= weights.sum()
+    return weights
+
+
+def plot_weights(decay_factor, window):
+    weights = calc_ewma_weights(decay_factor, window)
+    plt.plot(weights)
+
+
 # EWMA kiszámítása
 def calculate_ewma_variance(df_etf_returns, decay_factor, window):
     # Hozamok meghatározása
-    weights = decay_factor ** np.arange(window)
-    weights /= weights.sum()
+    weights = calc_ewma_weights(decay_factor, window)
     df = df_etf_returns.copy()
     # Négyzetes hozamok
     df['squared_log_returns'] = df['log_returns'] ** 2
@@ -44,14 +54,26 @@ def plot_ewma(etf):
     ewma_97 = calculate_ewma_variance(df, 0.97, 100)
     ewma = ewma_94.merge(ewma_97, left_on='Date', right_on='Date')
     ewma.plot()
-    plt.title(etf)
+    plt.title(f'Forecasted volatility of {etf} by EWMA')
     plt.legend(['decay_factor = 0.94', 'decay_factor = 0.97'])
+    plt.ylabel('Volatility')
     plt.xticks(rotation=-20)
     plt.show()
 
 
 if __name__ == '__main__':
-    # Plotolás
-    plot_ewma('VOO')
-    plot_ewma('MOO')
+    # Súlyok ábrázolása
+    ewma_weights_94 = np.array(calc_ewma_weights(0.94, 100))
+    ewma_weights_97 = np.array(calc_ewma_weights(0.97, 100))
 
+    df = pd.DataFrame({'decay_factor = 0.94': ewma_weights_94,
+                       'decay_factor = 0.97': ewma_weights_97},
+                      index=np.arange(1, 101))
+    df.plot()
+    plt.title('EWMA weights to lags')
+    plt.xlabel('Lag')
+    plt.ylabel('Weight')
+
+    # EWMA ábrázolása
+    plot_ewma('MOO')
+    plt.show()

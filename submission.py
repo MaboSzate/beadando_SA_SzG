@@ -1,6 +1,6 @@
 import numpy as np
-import pandas as pd
 import simulated_var as sv
+import EWMA_main as ewma
 
 
 def calculate_historical_var(df_portfolio_returns, alpha):
@@ -17,8 +17,7 @@ def simulated_returns(expected_return, volatility, correlation, numOfSim):
 
 
 def calculate_ewma_variance(df_etf_returns, decay_factor, window):
-    weights = decay_factor ** np.arange(window)
-    weights /= weights.sum()
+    weights = ewma.calc_ewma_weights(decay_factor, window)
     df = df_etf_returns.copy()
     df['squared_log_returns'] = df['log_returns'] ** 2
     for i in range(1, window+1):

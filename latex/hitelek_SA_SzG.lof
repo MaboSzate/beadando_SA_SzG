@@ -1,2 +1,4 @@
-\select@language {hungarian} \contentsline {figure}{\numberline {1}{\ignorespaces VaR értéke a VOO súlyának függvényében, 95\%-os konfidencia szint mellett}}{3}{figure.1}%
-\select@language {hungarian} \contentsline {figure}{\numberline {2}{\ignorespaces EWMA a MOO idősoros adatokon a két decay faktor mellett}}{4}{figure.2}%
+\select@language {hungarian} \contentsline {figure}{\numberline {1}{\ignorespaces VaR értéke a VOO súlyának függvényében, 95\%-os konfidenciaszint mellett}}{3}{figure.1}%
+\select@language {hungarian} \contentsline {figure}{\numberline {2}{\ignorespaces VaR értéke a VOO és MOO közötti korreláció függvényében.}}{5}{figure.2}%
+\select@language {hungarian} \contentsline {figure}{\numberline {3}{\ignorespaces EWMA súlyok különböző decay faktorok mellett}}{6}{figure.3}%
+\select@language {hungarian} \contentsline {figure}{\numberline {4}{\ignorespaces EWMA a MOO idősoros adatokon a két decay faktor mellett}}{7}{figure.4}%

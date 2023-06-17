@@ -1,4 +1,4 @@
 \select@language {hungarian} \contentsline {section}{\numberline {1}Historikus VaR}{3}{section.1}%
 \select@language {hungarian} \contentsline {section}{\numberline {2}Szimulált VaR}{4}{section.2}%
-\select@language {hungarian} \contentsline {section}{\numberline {3}EWMA}{4}{section.3}%
-\select@language {hungarian} \contentsline {section}{\numberline {4}Machine Learning}{5}{section.4}%
+\select@language {hungarian} \contentsline {section}{\numberline {3}EWMA}{5}{section.3}%
+\select@language {hungarian} \contentsline {section}{\numberline {4}Machine Learning}{7}{section.4}%
