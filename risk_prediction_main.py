@@ -55,7 +55,7 @@ def create_train_and_evaluate_polynomial_model(X_train, X_test,
 
 
 def hyperparameter_search(X_train, X_test, y_train, y_test,
-                          from_degree=1, to_degree=15):
+                          from_degree=1, to_degree=10):
     degrees = range(from_degree, to_degree+1)
     best_degree, best_mse, best_model = None, float('inf'), None
     d_mse = {}
@@ -120,7 +120,7 @@ def cross_validate(X, y, n_splits=5, from_degree=1, to_degree=10):
 
 if __name__ == '__main__':
     X_train, X_test, y_train, y_test = create_data("MOO.csv", 10, split=True)
-    hyperparameter_search(X_train, X_test, y_train, y_test)
+    hyperparameter_search(X_train, X_test, y_train, y_test, to_degree=5)
 
-    # X, y = create_data('MOO.csv', 10, split=False)
-    # cross_validate(X, y)
+    #X, y = create_data('MOO.csv', 10, split=False)
+    #cross_validate(X, y, to_degree=5)

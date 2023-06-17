@@ -7,7 +7,7 @@ def test_calc_historical_var():
     conf_level = 0.95
     last_day_of_interval = '2020-03-01'
     window_in_days = 250
-    var = m.calc_historical_var(d_weights, conf_level, last_day_of_interval, window_in_days)
+    var = m.calc_historical_var(d_weights, conf_level)
     return var
 
 
@@ -19,7 +19,7 @@ def test_find_best_var():
     conf_level = 0.95
     last_day_of_interval = '2020-03-01'
     window_in_days = 250
-    best = m.find_best_var(etf1, etf2, conf_level, last_day_of_interval, window_in_days)
+    best = m.find_best_var(etf1, etf2, conf_level)
     plt.show()
     return best
 
