@@ -89,10 +89,13 @@ def read_etf_file(etf):
 
 
 # Hozamok kiszámítása
-def calc_etf_returns(etf):
+def calc_etf_returns(etf, type):
     df = read_etf_file(etf)
     df = df[['Adj Close']]
-    df["returns"] = df["Adj Close"]/df["Adj Close"].shift(1) - 1
+    if type == 'simple':
+        df["returns"] = df["Adj Close"]/df["Adj Close"].shift(1) - 1
+    if type == 'log':
+        df["returns"] = np.log(df["Adj Close"] / df["Adj Close"].shift(1))
     df = df[['returns']]
     df.columns = [etf]
     return df
@@ -102,7 +105,7 @@ def calc_etf_returns(etf):
 def calc_joined_returns(d_weights):
     l_df = []
     for etf, value in d_weights.items():
-        df_temp = calc_etf_returns(etf)
+        df_temp = calc_etf_returns(etf, 'simple')
         l_df.append(df_temp)
     df_joined = pd.concat(l_df, axis=1)
     df_joined.sort_index(inplace=True)
