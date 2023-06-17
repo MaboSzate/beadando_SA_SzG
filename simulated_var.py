@@ -2,8 +2,10 @@ import numpy as np
 import pandas as pd
 import hist_var_main as hv
 from scipy.stats import norm
+import matplotlib.pyplot as plt
 
 
+# Hozam és volatilitás meghatározása
 # A loghozamok normális eloszlásúak, ezért ezekből számolunk várható értéket
 # és szórást
 def calc_mean_and_std_dev(etf, type):
@@ -11,7 +13,7 @@ def calc_mean_and_std_dev(etf, type):
     return float(df_return.mean()), float(df_return.std())
 
 
-# A súlyok fordítottan arányosak a volatilitással
+# A súlyok meghatározása, amik fordítottan arányosak a volatilitással
 def calc_weights(etf_list):
     reciprocal_std_dev_dict = {}
     sum_of_reciprocal_std_dev = 0
@@ -24,12 +26,16 @@ def calc_weights(etf_list):
     return weights
 
 
+# Portfólió várható hozamának meghatározása
 def calc_portfolio_expected_return(expected_return):
     weights = np.array(calc_weights(['VOO', 'MOO']))
     pf_expected_return = np.dot(weights, expected_return)
     return pf_expected_return
 
 
+# Portfólió szórásának meghatározása feltételezett korreláció mellett
+# A volatilitásokból meghatározzuk a C kovarianciamátrixot, és innen w
+# súlyvektor mellett a szórás w'Cw gyöke
 def calc_portfolio_std_dev(volatility, correlation):
     weights = np.array(calc_weights(['VOO', 'MOO']))
     vol_1 = volatility[0]
@@ -50,10 +56,13 @@ def simulated_returns(expected_return, volatility, correlation, numOfSim):
     return sim_returns
 
 
+# Kovarianciamátrixon alapuló VaR meghatározása
+# Kiszámoljuk a portfólió várható hozamát és szórását, ezek alapján az értékek
+# alapján pedig kiszámoljuk a megfelelő normális eloszlás adott kvantilisát
 def calc_covar_var_for_simulated_returns(expected_return, volatility,
                                          correlation, numOfSim, conf_level):
-    sim_returns_log = simulated_returns(expected_return, volatility, correlation,
-                                    numOfSim)
+    sim_returns_log = simulated_returns(expected_return, volatility,
+                                        correlation, numOfSim)
     # Átkonvertáljuk effektív hozammá
     sim_returns = np.exp(sim_returns_log) - 1
     sim_returns_mean = sim_returns.mean()
@@ -63,10 +72,23 @@ def calc_covar_var_for_simulated_returns(expected_return, volatility,
     return var
 
 
-# Ellenőrzés
+# VaR érték kirajzolása különböző korrelációk mellett
+def plot_var_to_correlation(expected_return, volatility, numOfSim, conf_level):
+    l_correlations = np.arange(-1, 1.01, 0.01)
+    l_var = [calc_covar_var_for_simulated_returns(
+        expected_return, volatility, correlation, numOfSim, conf_level)
+             for correlation in l_correlations]
+    df_var = pd.DataFrame(l_var, index=l_correlations, columns=['var'])
+    df_var.plot(xlabel='Correlation between VOO and MOO')
+    plt.show()
+
+
+# Értékek meghatározása és plotolás
 if __name__ == '__main__':
     r_VOO, std_dev_VOO = calc_mean_and_std_dev('VOO', 'log')
     r_MOO, std_dev_MOO = calc_mean_and_std_dev('MOO', 'log')
-    print(calc_covar_var_for_simulated_returns([r_VOO, r_MOO],
-                                               [std_dev_VOO, std_dev_MOO], -0.5,
-                                               7000000, 0.95))
+
+    expected_return = [r_VOO, r_MOO]
+    volatility = [std_dev_VOO, std_dev_MOO]
+
+    plot_var_to_correlation(expected_return, volatility, 5_000_000, 0.95)

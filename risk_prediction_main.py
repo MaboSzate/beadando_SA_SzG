@@ -1,13 +1,13 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
 
 
+# Adatok kiszámítása
 def create_data(filename, window, split=False):
     df = pd.read_csv(filename)
     df = df.set_index("Date")
@@ -54,6 +54,7 @@ def create_train_and_evaluate_polynomial_model(X_train, X_test,
     return name, model, mse_on_test_set, coefficients_on_train_set, y_pred
 
 
+# Polinom optimális fokának meghatározása
 def hyperparameter_search(X_train, X_test, y_train, y_test,
                           from_degree=1, to_degree=10):
     degrees = range(from_degree, to_degree+1)
@@ -72,6 +73,7 @@ def hyperparameter_search(X_train, X_test, y_train, y_test,
     return best_model
 
 
+# Együtthatók kiírása
 def print_coeffs(text, model):
     if 'linear_regression' in model.named_steps.keys():
         linreg = 'linear_regression'
@@ -84,6 +86,7 @@ def print_coeffs(text, model):
     print(text + coeffs_str)
 
 
+# Cross validation
 def cross_validate(X, y, n_splits=5, from_degree=1, to_degree=10):
     degrees = range(from_degree, to_degree+1)
     kf = KFold(n_splits=n_splits)
