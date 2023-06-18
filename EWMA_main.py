@@ -12,12 +12,14 @@ def calc_etf_logreturns(etf):
     return df[['log_returns']]
 
 
+# EWMA súlyok kiszámítása
 def calc_ewma_weights(decay_factor, window):
     weights = decay_factor ** np.arange(window)
     weights /= weights.sum()
     return weights
 
 
+# Súlyok ábrázolása
 def plot_weights(decay_factor, window):
     weights = calc_ewma_weights(decay_factor, window)
     plt.plot(weights)
