@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{hanging}
 \PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{amsmath}
 
 \hypersetup{
     colorlinks,
@@ -58,6 +59,10 @@
 \listoffigures
 
 \clearpage
+
+\section*{Git URL}
+
+A git repository, ahol dolgoztunk, \href{https://github.com/MaboSzate/beadando_SA_SzG}{ezen a linken} érhető el.
 
 \section{Historikus VaR}
 
@@ -117,12 +122,24 @@ Ahogy az ábrán látható, nagyobb decay faktor mellett kisebb az előrejelzett
 
 \section{Machine Learning}
 
-Végezetül készítettünk egy lineáris regressziós modellt is a jövőbeli variancia múltbeli adatokból történő előrejelzésére. A célváltozó az adott napi loghozam négyzete, a magyarázó változó pedig az előző 10 napi loghozamok négyzete, az EWMA módszeréhez hasonlóan. 
+Végezetül készítettünk egy lineáris regressziós modellt is a jövőbeli variancia múltbeli adatokból történő előrejelzésére. A célváltozó a napi loghozam négyzete, a magyarázó változók pedig a loghozamok négyzete laggolva (eltolva), az EWMA módszeréhez hasonlóan. Kezdetben 10 lagot csináltunk, hogy a számítógépeink le tudják futtatni az optimalizációt.
 
-Az optimális fokszám megtalálásához hiperparaméter-keresést végeztünk, ennek az eredménye az lett, hogy a legalacsonyabb MSE az elsőfokú modell mellett volt. A cross-validation ezt az eredményt megerősítette. A végső modell koefficiensei a következőek: 
-$$(0.1335, 0.0755, 0.0190, 0.0989, -0.0552; 0.0695, 0.0981, 0.0971, 0.0656, -0.0007).$$
+Az optimális fokszám megtalálásához hiperparaméter-keresést végeztünk, ennek az eredménye az lett, hogy a legalacsonyabb MSE az elsőfokú modell mellett volt. A fokszám növekedésével jelentősen emelkedett az MSE is, gyorsan egyértelművé vált számunkra, hogy elég csak az elsőfokú polinomos esetet vizsgálnunk. A cross-validation is megerősítette ezt.
 
-Látható, hogy a legnagyobb koefficiens a legelső változóhoz, azaz az 1 nappal korábbi loghozamhoz tartozik. Ez megfelel a várakozásainknak. A korábbi napi adatokhoz tartozó koefficiensek azonban nem szabályosan csökkennek, így kétséges, hogy mennyire használható a modellünk. Ha nem csak bő 2 év adatait vizsgáljuk, és/vagy több napra visszamenően vesszük a magyarázó változókat, talán jobb modellt kaphatunk.
+A modell egyszerűsödése elsőfokúra lehetővé tette számunkra, hogy hosszabb időtávon vizsgáljuk az adatokat, és, hogy 10 helyett 20 eltolt loghozamvektort használjunk. Így talán jobban használható modellt kaptunk. Az egész adathalmazra alkalmazott modell koefficiensei a következők lettek:
+\begin{align*}
+        &(0.1301,\; 0.4455,\; 0.106,\; -0.0975,\; -0.0006,\; 0.0760,\; 0.0082,\; 0.1015,\;
+        -0.0262,\; -0.0182,\; \\& -0.0183,\; 0.0087,\; 0.0069,\; 0.0149,\; 0.0625,\; -0.0709,\; 0.0341,\; 0.0045,\; -0.0427,\; 0.0107).
+\end{align*}
+Látható, hogy a legnagyobb koefficiens a második változóhoz, azaz a 2-vel eltolt loghozam-négyzetekhez tartozik. Ez az eredmény azt mondja a számunkra, hogy az előző két nap eseményei vannak a legnagyobb hatással az ETF árának alakulására. Ha csak az előző napot vesszük hozzá, vagy pedig ha több napot is hozzáveszünk, a magyarázóerő kisebb lesz.
+
+A cross-validation alapján ez az eredmény konzisztens a train-test halmazok megválasztásától függetlenül:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{cross_validation.png}
+    \caption{Első 8 koefficiens értéke elsőfokú modellben, 5 különböző train-test set mellett}
+\end{figure}
 
 \end{document}
 

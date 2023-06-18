@@ -12,7 +12,7 @@ def create_data(filename, window, split=False):
     df = pd.read_csv(filename)
     df = df.set_index("Date")
     df.index = pd.to_datetime(df.index)
-    df = df[df.index.year >= 2021]  # to shorten runtime
+    df = df[df.index.year >= 2010]  # to shorten runtime
     df["Log Returns"] = np.log(df['Adj Close']/df['Adj Close'].shift(1))
     df["Log Returns Sqrd"] = df["Log Returns"]**2
     cols = []
@@ -79,8 +79,7 @@ def print_coeffs(text, model):
         linreg = 'linear_regression'
     else:
         linreg = 'linearregression'
-    coeffs = np.concatenate(([model.named_steps[linreg].intercept_],
-                             model.named_steps[linreg].coef_[1:]))
+    coeffs = model.named_steps[linreg].coef_[1:]
     coeffs_str = ' '.join(np.format_float_positional(coeff, precision=4)
                           for coeff in coeffs)
     print(text + coeffs_str)
@@ -109,7 +108,6 @@ def cross_validate(X, y, n_splits=5, from_degree=1, to_degree=10):
         results[degree] = avg_mse
         print(f"For degree: {degree}, MSE: {avg_mse}")
         # fit for the whole dataset
-        # model, mse = train_and_evaluate_model(model, X, y, X_val, y_val)1
         model.fit(X, y)
         print_coeffs("Final Coefficients: ", model)
         if avg_mse < best_mse:
@@ -122,8 +120,8 @@ def cross_validate(X, y, n_splits=5, from_degree=1, to_degree=10):
 
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test = create_data("MOO.csv", 10, split=True)
-    hyperparameter_search(X_train, X_test, y_train, y_test, to_degree=5)
+    # X_train, X_test, y_train, y_test = create_data("MOO.csv", 20, split=True)
+    # hyperparameter_search(X_train, X_test, y_train, y_test, to_degree=1)
 
-    #X, y = create_data('MOO.csv', 10, split=False)
-    #cross_validate(X, y, to_degree=5)
+    X, y = create_data('MOO.csv', 20, split=False)
+    cross_validate(X, y, to_degree=1)

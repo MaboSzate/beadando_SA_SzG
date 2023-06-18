@@ -2,3 +2,4 @@
 \select@language {hungarian} \contentsline {figure}{\numberline {2}{\ignorespaces VaR értéke a VOO és MOO közötti korreláció függvényében.}}{5}{figure.2}%
 \select@language {hungarian} \contentsline {figure}{\numberline {3}{\ignorespaces EWMA súlyok különböző decay faktorok mellett}}{6}{figure.3}%
 \select@language {hungarian} \contentsline {figure}{\numberline {4}{\ignorespaces EWMA a MOO idősoros adatokon a két decay faktor mellett}}{7}{figure.4}%
+\select@language {hungarian} \contentsline {figure}{\numberline {5}{\ignorespaces Első 8 koefficiens értéke elsőfokú modellben, 5 különböző train-test set mellett}}{8}{figure.5}%
